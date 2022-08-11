@@ -1,37 +1,60 @@
 const OPTIONS = ["Rock", "Paper", "Scissors"];
-
-const buttons = document.querySelectorAll('button');
-const results = document.querySelector('#result');
-buttons.forEach((button) => {
-    button.addEventListener('click', () => {
-        const computerSelection = getComputerChoice();
-        const result = playRound(button.textContent, computerSelection);
-        results.textContent = result;
-    })
-});
+game();
 
 function getComputerChoice() {
     return OPTIONS[Math.floor(Math.random() * 3)];
 }
 
 function playRound(playerSelection, computerSelection) {
+    const results = document.querySelector('#result');
     if (playerSelection === computerSelection) {
-        return `It's a tie! ${playerSelection} ties with ${computerSelection}`;
+        results.textContent = `Round Result: It's a tie! 
+            ${playerSelection} ties with ${computerSelection}`;
+        return 0;
     }
-    
+
     if (playerSelection === "Rock" && computerSelection === "Scissors" || 
             playerSelection === "Paper" && computerSelection === "Rock" || 
-            playerSelection === "Scissors" && computerSelection === "Paper") {
-        return `You win! ${playerSelection} beats ${computerSelection}`;
+            playerSelection === "Scissors" && computerSelection === "Paper") {     
+        results.textContent = `Round Result: You win! 
+            ${playerSelection} beats ${computerSelection}`;
+        return 1;
     } else {
-        return `You lose! ${computerSelection} beats ${playerSelection}`;
+        results.textContent = `Round Results: You lose! 
+            ${computerSelection} beats ${playerSelection}`;
+        return -1;
     }
 }
 
 function game() {
-    let playerSelection = promptUser();
-    let computerSelection = getComputerChoice();
-    console.log(playRound(playerSelection, computerSelection));
+    const buttons = document.querySelectorAll('button');
+    const userScoreUI = document.querySelector('#user-score');
+    const computerScoreUI = document.querySelector('#computer-score');
+    const winner = document.querySelector('#winner');
+    let userScore = 0;
+    let computerScore = 0;
+    buttons.forEach((button) => {
+        button.addEventListener('click', () => {
+            const userSelection = button.textContent;
+            const computerSelection = getComputerChoice();
+            const result = playRound(userSelection, computerSelection);
+            if (result == 1) {
+                userScore++;
+                userScoreUI.textContent = "User Score: " 
+                    + userScore;
+            } else if (result == -1) {
+                computerScore++;
+                computerScoreUI.textContent = "Computer Score: " 
+                    + computerScore;
+            }
+
+            if (userScore == 5) {
+                winner.textContent = 'You win!';
+            } else if (computerScore == 5) {
+                winner.textContent = 'The computer wins!';
+            }
+        })
+    });
 }
 
 // Uses console and prompts to play the game; outdated version
